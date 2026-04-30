@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>png/button/cycle.png</file>
+        <file>png/button/list.png</file>
+        <file>png/button/next.png</file>
+        <file>png/button/order.png</file>
+        <file>png/button/play.png</file>
+        <file>png/button/prev.png</file>
+        <file>png/button/random.png</file>
+        <file>png/button/stop.png</file>
+        <file>png/backgroud/backgroud1.webp</file>
+        <file>png/button/close.png</file>
+        <file>png/button/help.png</file>
+        <file>png/button/skin_change.png</file>
+        <file>png/button/love.png</file>
+        <file>png/button/Ai.png</file>
+        <file>png/button/Login.png</file>
+        <file>avatar/res-LoginImage1.jpg</file>
+        <file>avatar/res-LoginImage2.png</file>
+    </qresource>
+</RCC>
