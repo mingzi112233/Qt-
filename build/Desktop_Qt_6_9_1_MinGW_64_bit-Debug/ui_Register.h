@@ -166,6 +166,7 @@ public:
 
         register_varifypushButton = new QPushButton(page_7);
         register_varifypushButton->setObjectName("register_varifypushButton");
+        register_varifypushButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         horizontalLayout_20->addWidget(register_varifypushButton);
 

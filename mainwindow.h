@@ -36,6 +36,9 @@
 #include <QMouseEvent>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QScrollBar>
 #include <math.h>
 
 static const QString kugouSearchApi = "http://mobilecdn.kugou.com/api/v3/search/song?";
@@ -85,15 +88,17 @@ private slots:
     void netReply(QNetworkReply *); //读取网络数据
 
     void lyricTextShow(QString role, QString content); //显示歌词
-    void SendMusicTitle(QString);  //向ai发送歌名
+    void SendMusicTitle(QString,QString);  //向ai发送歌名
     void downloadPlayer(QString hash); //音乐歌词下载
     void handleDeepSeekReply(QNetworkReply *reply); // 处理服务器回复
 
     void on_FindButton_clicked(); //寻找歌曲
+    void processAiRecommendations(QStringList names); //处理AI推荐的歌曲
 
     void on_help_pushButton_clicked(); //帮助
     void showSearchContextMenu(const QPoint &pos); //右击搜索歌曲列表
-    void handleFavoriteLogic(QListWidgetItem *item); //右击搜索歌曲列表菜单
+    void handleFavoriteLogic(QListWidgetItem *item); //右击搜索歌曲列表菜单选择收藏音乐
+    void handleNextPlayLogic(QListWidgetItem *item); //右击搜索歌曲列表菜单选择添加到下一首播放
     void handleLoginSuccess(QString username); //接受用户名
 
     void backgrouptoDefault(); //更换默认皮肤
@@ -119,11 +124,20 @@ private slots:
 
     void on_collect_Button_clicked();
 
+    void on_NextMusicListButton_clicked();
+
 protected:
 
     void httpAccess(QString); //访问http网页
     void hashJsonAnalysis(QByteArray); //使用Json解析音乐的hash与album_id值
     QString musicJsonAnalysis(QByteArray); //搜索的音乐数据信息使用JSON解析，解析出真正的音乐文件和歌词
+
+    //歌词滚动，函数部分，start
+    void startCharHighlight(int lineIndex);      // 启动逐字高亮
+    void updateCharHighlight(int lineIndex, int charCount); // 更新逐字高亮
+    void updateCharHighlightByPosition(qint64 position);    // 根据位置更新高亮
+    void updateLyricPosition(qint64 position); //歌词滚动效果
+    //歌词滚动部分end
 
     void slotTimerTimeOut();
     void clicke();
@@ -157,6 +171,22 @@ private:
     QPoint movePoint;
     bool mousePress;
     bool musicPlay;
+
+    //歌词滚动，变量部分，start
+
+    QStringList m_lyricLines;           // 存储歌词行
+    int m_currentLine = -1;             // 当前歌词行索引
+    int m_currentChar = 0;              // 当前高亮字符位置
+    QTimer *m_highlightTimer = nullptr; // 逐字高亮定时器
+
+    //歌词滚动部分end
+
+    //下一首播放列表，start
+
+    QFrame *nextPlayFrame = nullptr;
+    QListWidget *nextPlayList = nullptr;
+
+    //下一首播放列表，end
 
     int mouseClike;
     QTimer m_cTimer;

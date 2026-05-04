@@ -1,0 +1,405 @@
+/* 针对三个主列表容器的卡片化 */
+QListWidget#FindMusiclistWidget,
+QListWidget#ShowMusiclistWidget,
+QListWidget#HistoryMusiclistWidget {
+    background-color: rgba(255, 255, 255, 120); /* 半透明白 */
+    border: 1px solid rgba(255, 255, 255, 80);
+    border-radius: 15px; /* 较大的圆角 */
+    padding: 10px;
+    color: #333333; /* 建议深色文字，可读性更好 */
+}
+
+/* 隐藏列表选中时的生硬颜色 */
+QListWidget::item:selected {
+    background-color: rgba(255, 255, 255, 180);
+    color: #000;
+    border-radius: 8px;
+}
+
+/* 搜索框：仿胶囊形状 */
+QLineEdit#FindmusicLineEdit {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(255, 255, 255, 225),
+                stop:1 rgba(238, 248, 255, 215));
+    border-radius: 18px;
+    padding: 5px 18px;
+    border: 1px solid rgba(255, 255, 255, 180);
+    font-size: 14px;
+    color: #1f354d;
+    selection-background-color: #5A9DFF;
+    selection-color: white;
+}
+
+QLineEdit#FindmusicLineEdit:hover {
+    background-color: rgba(255, 255, 255, 235);
+    border: 1px solid rgba(90, 157, 255, 150);
+}
+
+QLineEdit#FindmusicLineEdit:focus {
+    background-color: white;
+    border: 1px solid #5A9DFF;
+}
+
+/* 按钮：扁平化 */
+QPushButton#Clear_History_Button, QPushButton#FindButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255, 255, 255, 230),
+                stop:1 rgba(224, 241, 255, 210));
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 190);
+    padding: 5px 15px;
+    color: #22384f;
+    font-weight: bold;
+}
+
+QPushButton#Clear_History_Button:hover, QPushButton#FindButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255, 255, 255, 255),
+                stop:1 rgba(207, 231, 255, 235));
+    border: 1px solid rgba(90, 157, 255, 170);
+    color: #0f4b8f;
+}
+
+QPushButton#Clear_History_Button:pressed, QPushButton#FindButton:pressed {
+    background-color: rgba(196, 223, 255, 230);
+    padding-top: 6px;
+    padding-bottom: 4px;
+}
+
+QPushButton:hover {
+    background-color: rgba(255, 255, 255, 205);
+}
+
+/* 播放控制区域的容器 QGroupBox */
+QGroupBox#groupBox {
+    border: none;
+    background-color: rgba(255, 255, 255, 80);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+/* 进度条样式自定义 */
+QSlider::groove:horizontal {
+    height: 4px;
+    background: rgba(255, 255, 255, 100);
+    border-radius: 2px;
+}
+
+QSlider::handle:horizontal {
+    background: white;
+    width: 12px;
+    height: 12px;
+    margin: -4px 0;
+    border-radius: 6px;
+}
+
+
+/* 统一弹出窗口的背景，使其与主窗口风格一致 */
+QDialog#Dialog, QDialog#CollectDialog {
+    background-color: rgba(244, 250, 255, 235); /* 明亮浅蓝白，减少灰暗感 */
+    border: 1px solid rgba(255, 255, 255, 235);
+    border-radius: 20px;
+}
+
+/* 优化收藏库和AI界面的列表 */
+QListWidget#collect_listWidget, QListWidget#AI_listWidget {
+    background-color: rgba(255, 255, 255, 238);
+    border: 1px solid rgba(184, 211, 238, 150);
+    border-radius: 12px;
+    padding: 8px;
+    color: #23384f;
+    outline: none;
+}
+
+QListWidget#collect_listWidget::item, QListWidget#AI_listWidget::item {
+    min-height: 24px;
+    padding: 4px 8px;
+    border-radius: 7px;
+    color: #23384f;
+}
+
+QListWidget#collect_listWidget::item {
+    min-height: 20px;
+    padding: 2px 6px;
+}
+
+QListWidget#collect_listWidget::item:hover, QListWidget#AI_listWidget::item:hover {
+    background-color: rgba(90, 157, 255, 28);
+}
+
+QListWidget#collect_listWidget::item:selected, QListWidget#AI_listWidget::item:selected {
+    background-color: rgba(90, 157, 255, 135);
+    color: white;
+}
+
+/* 统一顶部标题栏文字 */
+QLabel#collectTextlabel, QLabel#Aititlelabel {
+    font-size: 18px;
+    font-weight: bold;
+    color: #22384f;
+}
+
+QDialog#LoginDialog, QDialog#RegisterDialog, QDialog#ResetPwdDialog {
+    background-color: rgba(255, 255, 255, 180); /* 提升白色的浓度，保证文字清晰 */
+    border: 1px solid rgba(255, 255, 255, 255); /* 亮色边框模拟高光 */
+    border-radius: 25px;
+}
+
+QLineEdit {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255, 255, 255, 225),
+                stop:1 rgba(246, 250, 255, 205));
+    border: 1px solid rgba(190, 207, 226, 180);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #24364a;
+    selection-background-color: #5A9DFF;
+    selection-color: white;
+}
+
+QLineEdit:hover {
+    border: 1px solid rgba(90, 157, 255, 150);
+    background-color: rgba(255, 255, 255, 230);
+}
+
+QLineEdit:focus {
+    border: 1px solid #5A9DFF; /* 聚焦时使用你主界面的蓝色[cite: 21] */
+    background-color: white;
+}
+
+/* 主按钮样式：登录、确认 */
+QPushButton#Login_pushButton,
+QPushButton#register_confirmpushButton,
+QPushButton#ResetPwd_confirmpushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #72B1FF,
+                stop:1 #4A8FFF);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 170);
+    border-radius: 10px;
+    padding: 7px 18px;
+    font-weight: bold;
+    max-width: 120px; /* 限制宽度，不让按钮太大 */
+}
+
+QPushButton#Login_pushButton:hover,
+QPushButton#register_confirmpushButton:hover,
+QPushButton#ResetPwd_confirmpushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #87C0FF,
+                stop:1 #5A9DFF);
+}
+
+QPushButton#Login_pushButton:pressed,
+QPushButton#register_confirmpushButton:pressed,
+QPushButton#ResetPwd_confirmpushButton:pressed {
+    background-color: #3D7EDD;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+/* 次要按钮样式：注册、取消 */
+QPushButton#registerpushButton,
+QPushButton#register_cancelpushButton,
+QPushButton#ResetPwd_cancelpushButton {
+    background-color: rgba(255, 255, 255, 95);
+    border: 1px solid #5A9DFF;
+    border-radius: 10px;
+    color: #5A9DFF;
+    padding: 7px 18px;
+    font-weight: bold;
+    max-width: 120px;
+}
+
+QPushButton#registerpushButton:hover,
+QPushButton#register_cancelpushButton:hover,
+QPushButton#ResetPwd_cancelpushButton:hover {
+    background-color: rgba(90, 157, 255, 28); /* 浅蓝色半透明背景 */
+    border: 1px solid #7BB1FF;
+}
+
+/* 忘记密码按钮：纯文字链接感 */
+QPushButton#pushButton {
+    color: #909399;
+    font-size: 12px;
+    border: none;
+    background: transparent;
+}
+QPushButton#pushButton:hover {
+    color: #5A9DFF;
+    text-decoration: underline;
+}
+
+/* --- 滚动条样式start  --- */
+
+/* 1. 滑块整体的槽轨道 */
+QSlider::groove:horizontal {
+    height: 6px;
+    background: rgba(255, 255, 255, 60); /* 半透明背景 */
+    border-radius: 3px;
+}
+
+/* 2. 已滑过部分的轨道（高亮色） */
+QSlider::sub-page:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #5A9DFF, stop:1 #7BB1FF); /* 使用你项目中的蓝色调 */
+    border-radius: 3px;
+}
+
+/* 3. 滑块（那个可以拖动的点） */
+QSlider::handle:horizontal {
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border: 1px solid #5A9DFF;
+    margin: -4px 0; /* 让滑块居中并稍微大于轨道高度 */
+    border-radius: 7px;
+}
+
+/* 滑块悬停效果 */
+QSlider::handle:horizontal:hover {
+    background: #f0f0f0;
+    width: 14px;
+    height: 14px;
+    margin: -4px 0;
+}
+
+QSlider::handle:horizontal:pressed {
+    background: #eaf3ff;
+    width: 14px;
+    height: 14px;
+    margin: -4px 0;
+    border: 1px solid #3D7EDD;
+}
+/* --- 滚动条样式end  --- */
+
+
+/* --- 垂直滚动条样式start  --- */
+QScrollBar:vertical {
+    width: 10px;
+    background: rgba(255, 255, 255, 30); /* 极淡的底色 */
+    margin: 0px 0px 0px 0px;
+    border-radius: 5px;
+}
+
+/* 滚动条中间的滑块 */
+QScrollBar::handle:vertical {
+    background: rgba(255, 255, 255, 120); /* 半透明滑块 */
+    min-height: 20px;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+/* 滑块悬停时加深颜色 */
+QScrollBar::handle:vertical:hover {
+    background: rgba(255, 255, 255, 180);
+}
+
+/* 隐藏上下箭头（现代UI通常不显示箭头） */
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+/* 轨道空白区域 */
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* --- 垂直滚动条样式end  --- */
+
+/* --- 水平滚动条样式start  --- */
+
+QScrollBar:horizontal {
+    height: 10px; /* 水平滚动条定义高度 */
+    background: rgba(255, 255, 255, 30);
+    margin: 0px 0px 0px 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: rgba(255, 255, 255, 120);
+    min-width: 20px; /* 水平方向是最小宽度 */
+    border-radius: 5px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: rgba(255, 255, 255, 180);
+}
+
+/* 隐藏左箭头和右箭头 */
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+/* 轨道空白区域 */
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* --- 水平滚动条样式end  --- */
+
+/* --- AI 界面播放按钮专用样式 --- */
+QPushButton#Recommend_pushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255, 255, 255, 245),
+                stop:1 rgba(232, 244, 255, 230));
+    color: #24517f;
+    border-radius: 12px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid rgba(90, 157, 255, 140);
+}
+
+QPushButton#Recommend_pushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(255, 255, 255, 255),
+                stop:1 rgba(210, 234, 255, 245));
+    color: #0f4b8f;
+    border: 1px solid rgba(61, 126, 221, 210);
+}
+
+QPushButton#Recommend_pushButton:pressed {
+    background-color: rgba(196, 223, 255, 235);
+    color: #0f4b8f;
+    border: 1px solid rgba(61, 126, 221, 230);
+}
+
+QPushButton#RecommendPlay_pushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #75B5FF,
+                stop:1 #4A8FFF);
+    color: white;
+    border-radius: 12px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 180);
+}
+
+/* 鼠标悬停效果：颜色变亮，并增加阴影 */
+QPushButton#RecommendPlay_pushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #9BD0FF,
+                stop:1 #62A8FF);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 245);
+}
+
+/* 按钮被按下效果 */
+QPushButton#RecommendPlay_pushButton:pressed {
+    background-color: #3D7EDD;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 210);
+}
+
+/* 按钮禁用状态（当你没进行推荐时） */
+QPushButton#RecommendPlay_pushButton:disabled {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 rgba(225, 231, 238, 210),
+                stop:1 rgba(204, 214, 225, 205));
+    color: rgba(112, 128, 145, 190);
+    border: 1px solid rgba(170, 183, 198, 150);
+}

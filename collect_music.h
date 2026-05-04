@@ -11,7 +11,7 @@
 #include <QMenu>
 #include "login.h"
 
-extern QString CurrentTitle,teCurrentTitle;
+extern QString CurrentTitle,teCurrentTitle,CurrentMusicName;
 extern bool isCollectPlay;
 
 namespace Ui {

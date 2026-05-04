@@ -17,5 +17,7 @@
         <file>png/button/Login.png</file>
         <file>avatar/res-LoginImage1.jpg</file>
         <file>avatar/res-LoginImage2.png</file>
+        <file>style/stylesheet.qss</file>
+        <file>png/button/speaker.png</file>
     </qresource>
 </RCC>

@@ -42,24 +42,33 @@ template <> constexpr inline auto AI::qt_create_metaobjectdata<qt_meta_tag_ZN2AI
         "AI",
         "requestMusicSearch",
         "",
+        "recommendSongsReady",
+        "songNames",
         "on_Aiclose_pushButton_clicked",
         "handleDeepSeekReply",
         "QNetworkReply*",
         "reply",
-        "on_Recommend_pushButton_clicked"
+        "on_Recommend_pushButton_clicked",
+        "on_RecommendPlay_pushButton_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
         // Signal 'requestMusicSearch'
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'recommendSongsReady'
+        QtMocHelpers::SignalData<void(QStringList)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QStringList, 4 },
+        }}),
         // Slot 'on_Aiclose_pushButton_clicked'
-        QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'handleDeepSeekReply'
-        QtMocHelpers::SlotData<void(QNetworkReply *)>(4, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 5, 6 },
+        QtMocHelpers::SlotData<void(QNetworkReply *)>(6, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 7, 8 },
         }}),
         // Slot 'on_Recommend_pushButton_clicked'
-        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_RecommendPlay_pushButton_clicked'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -84,16 +93,18 @@ void AI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->requestMusicSearch(); break;
-        case 1: _t->on_Aiclose_pushButton_clicked(); break;
-        case 2: _t->handleDeepSeekReply((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
-        case 3: _t->on_Recommend_pushButton_clicked(); break;
+        case 1: _t->recommendSongsReady((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1]))); break;
+        case 2: _t->on_Aiclose_pushButton_clicked(); break;
+        case 3: _t->handleDeepSeekReply((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
+        case 4: _t->on_Recommend_pushButton_clicked(); break;
+        case 5: _t->on_RecommendPlay_pushButton_clicked(); break;
         default: ;
         }
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
-        case 2:
+        case 3:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
@@ -104,6 +115,8 @@ void AI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (AI::*)()>(_a, &AI::requestMusicSearch, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (AI::*)(QStringList )>(_a, &AI::recommendSongsReady, 1))
             return;
     }
 }
@@ -127,14 +140,14 @@ int AI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     return _id;
 }
@@ -143,5 +156,11 @@ int AI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void AI::requestMusicSearch()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+}
+
+// SIGNAL 1
+void AI::recommendSongsReady(QStringList _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 QT_WARNING_POP

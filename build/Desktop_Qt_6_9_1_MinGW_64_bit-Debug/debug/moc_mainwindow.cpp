@@ -67,12 +67,15 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "handleDeepSeekReply",
         "reply",
         "on_FindButton_clicked",
+        "processAiRecommendations",
+        "names",
         "on_help_pushButton_clicked",
         "showSearchContextMenu",
         "pos",
         "handleFavoriteLogic",
         "QListWidgetItem*",
         "item",
+        "handleNextPlayLogic",
         "handleLoginSuccess",
         "username",
         "backgrouptoDefault",
@@ -93,7 +96,8 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_Clear_History_Button_clicked",
         "on_HistoryMusiclistWidget_itemDoubleClicked",
         "on_Login_Button_clicked",
-        "on_collect_Button_clicked"
+        "on_collect_Button_clicked",
+        "on_NextMusicListButton_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -144,8 +148,8 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
             { QMetaType::QString, 20 }, { QMetaType::QString, 21 },
         }}),
         // Slot 'SendMusicTitle'
-        QtMocHelpers::SlotData<void(QString)>(22, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 2 },
+        QtMocHelpers::SlotData<void(QString, QString)>(22, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 2 }, { QMetaType::QString, 2 },
         }}),
         // Slot 'downloadPlayer'
         QtMocHelpers::SlotData<void(QString)>(23, 2, QMC::AccessPrivate, QMetaType::Void, {{
@@ -157,56 +161,66 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         }}),
         // Slot 'on_FindButton_clicked'
         QtMocHelpers::SlotData<void()>(27, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'processAiRecommendations'
+        QtMocHelpers::SlotData<void(QStringList)>(28, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QStringList, 29 },
+        }}),
         // Slot 'on_help_pushButton_clicked'
-        QtMocHelpers::SlotData<void()>(28, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(30, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'showSearchContextMenu'
-        QtMocHelpers::SlotData<void(const QPoint &)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QPoint, 30 },
+        QtMocHelpers::SlotData<void(const QPoint &)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QPoint, 32 },
         }}),
         // Slot 'handleFavoriteLogic'
-        QtMocHelpers::SlotData<void(QListWidgetItem *)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 32, 33 },
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(33, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 34, 35 },
+        }}),
+        // Slot 'handleNextPlayLogic'
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(36, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 34, 35 },
         }}),
         // Slot 'handleLoginSuccess'
-        QtMocHelpers::SlotData<void(QString)>(34, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 35 },
+        QtMocHelpers::SlotData<void(QString)>(37, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 38 },
         }}),
         // Slot 'backgrouptoDefault'
-        QtMocHelpers::SlotData<void()>(36, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(39, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'ReadHistoryList'
-        QtMocHelpers::SlotData<void()>(37, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(40, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_sky_pushButton_clicked'
-        QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(41, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'startPlay'
-        QtMocHelpers::SlotData<void(QString)>(39, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(QString)>(42, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 43 },
         }}),
         // Slot 'handleMediaStatusChanged'
-        QtMocHelpers::SlotData<void(QMediaPlayer::MediaStatus)>(41, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 42, 43 },
+        QtMocHelpers::SlotData<void(QMediaPlayer::MediaStatus)>(44, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 45, 46 },
         }}),
         // Slot 'GetCurrentRow'
-        QtMocHelpers::SlotData<void()>(44, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(47, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'playFindMusic'
-        QtMocHelpers::SlotData<void()>(45, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(48, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'downloadFile'
-        QtMocHelpers::SlotData<bool(const QString &, const QString &)>(46, 2, QMC::AccessPrivate, QMetaType::Bool, {{
-            { QMetaType::QString, 47 }, { QMetaType::QString, 48 },
+        QtMocHelpers::SlotData<bool(const QString &, const QString &)>(49, 2, QMC::AccessPrivate, QMetaType::Bool, {{
+            { QMetaType::QString, 50 }, { QMetaType::QString, 51 },
         }}),
         // Slot 'deleteLastDownloadedFile'
-        QtMocHelpers::SlotData<void()>(49, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(52, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_recommend_pushButton_clicked'
-        QtMocHelpers::SlotData<void()>(50, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(53, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_Clear_History_Button_clicked'
-        QtMocHelpers::SlotData<void()>(51, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(54, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_HistoryMusiclistWidget_itemDoubleClicked'
-        QtMocHelpers::SlotData<void(QListWidgetItem *)>(52, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 32, 33 },
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(55, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 34, 35 },
         }}),
         // Slot 'on_Login_Button_clicked'
-        QtMocHelpers::SlotData<void()>(53, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(56, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_collect_Button_clicked'
-        QtMocHelpers::SlotData<void()>(54, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(57, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_NextMusicListButton_clicked'
+        QtMocHelpers::SlotData<void()>(58, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -245,29 +259,32 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 12: _t->updateDuration((*reinterpret_cast< std::add_pointer_t<qint64>>(_a[1]))); break;
         case 13: _t->netReply((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         case 14: _t->lyricTextShow((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 15: _t->SendMusicTitle((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 15: _t->SendMusicTitle((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 16: _t->downloadPlayer((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 17: _t->handleDeepSeekReply((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         case 18: _t->on_FindButton_clicked(); break;
-        case 19: _t->on_help_pushButton_clicked(); break;
-        case 20: _t->showSearchContextMenu((*reinterpret_cast< std::add_pointer_t<QPoint>>(_a[1]))); break;
-        case 21: _t->handleFavoriteLogic((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 22: _t->handleLoginSuccess((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 23: _t->backgrouptoDefault(); break;
-        case 24: _t->ReadHistoryList(); break;
-        case 25: _t->on_sky_pushButton_clicked(); break;
-        case 26: _t->startPlay((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 27: _t->handleMediaStatusChanged((*reinterpret_cast< std::add_pointer_t<QMediaPlayer::MediaStatus>>(_a[1]))); break;
-        case 28: _t->GetCurrentRow(); break;
-        case 29: _t->playFindMusic(); break;
-        case 30: { bool _r = _t->downloadFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])));
+        case 19: _t->processAiRecommendations((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1]))); break;
+        case 20: _t->on_help_pushButton_clicked(); break;
+        case 21: _t->showSearchContextMenu((*reinterpret_cast< std::add_pointer_t<QPoint>>(_a[1]))); break;
+        case 22: _t->handleFavoriteLogic((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 23: _t->handleNextPlayLogic((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 24: _t->handleLoginSuccess((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 25: _t->backgrouptoDefault(); break;
+        case 26: _t->ReadHistoryList(); break;
+        case 27: _t->on_sky_pushButton_clicked(); break;
+        case 28: _t->startPlay((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 29: _t->handleMediaStatusChanged((*reinterpret_cast< std::add_pointer_t<QMediaPlayer::MediaStatus>>(_a[1]))); break;
+        case 30: _t->GetCurrentRow(); break;
+        case 31: _t->playFindMusic(); break;
+        case 32: { bool _r = _t->downloadFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
-        case 31: _t->deleteLastDownloadedFile(); break;
-        case 32: _t->on_recommend_pushButton_clicked(); break;
-        case 33: _t->on_Clear_History_Button_clicked(); break;
-        case 34: _t->on_HistoryMusiclistWidget_itemDoubleClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 35: _t->on_Login_Button_clicked(); break;
-        case 36: _t->on_collect_Button_clicked(); break;
+        case 33: _t->deleteLastDownloadedFile(); break;
+        case 34: _t->on_recommend_pushButton_clicked(); break;
+        case 35: _t->on_Clear_History_Button_clicked(); break;
+        case 36: _t->on_HistoryMusiclistWidget_itemDoubleClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 37: _t->on_Login_Button_clicked(); break;
+        case 38: _t->on_collect_Button_clicked(); break;
+        case 39: _t->on_NextMusicListButton_clicked(); break;
         default: ;
         }
     }
@@ -323,14 +340,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 37)
+        if (_id < 40)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 37;
+        _id -= 40;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 37)
+        if (_id < 40)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 37;
+        _id -= 40;
     }
     return _id;
 }

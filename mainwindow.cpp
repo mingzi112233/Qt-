@@ -14,6 +14,38 @@ MainWindow::MainWindow(QWidget *parent)
     ui->FindMusiclistWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     qApp->installEventFilter(this);
 
+
+    this->setWindowFlags(Qt::FramelessWindowHint); // 去掉丑陋的系统标题栏
+    //this->setAttribute(Qt::WA_TranslucentBackground); // 允许背景透明
+    // 1. 清除所有列表控件的硬编码样式
+    // ui->FindMusiclistWidget->setStyleSheet("");
+    // ui->ShowMusiclistWidget->setStyleSheet("");
+    // ui->HistoryMusiclistWidget->setStyleSheet("");
+
+    // // 2. 清除所有标签的颜色定义
+    // ui->label->setStyleSheet("");
+    // ui->label_2->setStyleSheet("");
+    // ui->label_3->setStyleSheet("");
+    // ui->label_6->setStyleSheet("");
+    // ui->TotalTimeLabel->setStyleSheet("");
+    // ui->CurrentTimeLabel->setStyleSheet("");
+
+    // // 3. 清除顶部功能按钮的样式
+    // ui->help_pushButton->setStyleSheet("");
+    // ui->Login_Button->setStyleSheet("");
+    // ui->close_pushButton->setStyleSheet("");
+    // ui->collect_Button->setStyleSheet("");
+    // ui->recommend_pushButton->setStyleSheet("");
+
+    // // 4. 清除播放控制按钮的样式
+    // ui->prevButton->setStyleSheet("");
+    // ui->StopButton->setStyleSheet("");
+    // ui->NextButton->setStyleSheet("");
+    // ui->ModeButton->setStyleSheet("");
+
+    // // 5. 其他可能影响外观的容器
+    // ui->groupBox->setStyleSheet("");
+
     //ai推荐窗口设置
     isAiChatVisible = false;
     aiWindow = new AI(this);
@@ -50,10 +82,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->FindMusiclistWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::showSearchContextMenu);
     connect(login, &Login::loginSuccess, this, &MainWindow::handleLoginSuccess);
+    connect(aiWindow, &AI::recommendSongsReady, this, &MainWindow::processAiRecommendations);
 
     connect(this, &MainWindow::updateList, collectWindow, &Collect_Music::updateList);
     connect(collectWindow, &Collect_Music::PlayCollectMusic, this, &MainWindow::downloadPlayer);
     connect(collectWindow, &Collect_Music::ReadHistoryList, this, &MainWindow::ReadHistoryList);
+    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::updateLyricPosition);
 
 
     this->setWindowFlag(Qt::FramelessWindowHint);
@@ -114,6 +148,7 @@ MainWindow::~MainWindow()
 bool MainWindow::eventFilter(QObject *watched, QEvent *event) // 过滤事件
 {
     // 检查是否是鼠标按下事件
+    IsLogin=true;
     if (!IsLogin && event->type() == QEvent::MouseButtonPress) {
 
         QPushButton *btn = qobject_cast<QPushButton*>(watched);
@@ -244,7 +279,10 @@ void MainWindow::showSearchContextMenu(const QPoint &pos) //右击搜索列表�
 
     // 添加菜单项
     QAction *favAction = new QAction(QIcon(":/png/button/love.png"), "收藏该歌曲", this);
+    QAction *nextMusic = new QAction(QIcon(":/png/button/love.png"), "下一首播放", this);
+    menu.addAction(nextMusic);
     menu.addAction(favAction);
+
 
     // 阻塞代码，直到用户点击了某个选项或关闭了菜单
     QAction *selectedAction = menu.exec(ui->FindMusiclistWidget->mapToGlobal(pos));
@@ -254,9 +292,13 @@ void MainWindow::showSearchContextMenu(const QPoint &pos) //右击搜索列表�
         // 执行收藏逻辑
         handleFavoriteLogic(item);
     }
+    else if(selectedAction == nextMusic){
+        qDebug()<<"添加到了下一首播放";
+        handleNextPlayLogic(item);
+    }
 }
 
-void MainWindow::handleFavoriteLogic(QListWidgetItem *item) //右击搜索歌曲列表菜单
+void MainWindow::handleFavoriteLogic(QListWidgetItem *item) //右击搜索歌曲列表菜单选择收藏音乐
 {
     QSqlQuery query;
     query.prepare("SELECT songname, singername, hash FROM searchlist WHERE id = ?");
@@ -298,6 +340,40 @@ void MainWindow::handleFavoriteLogic(QListWidgetItem *item) //右击搜索歌曲
     }
     else
         QMessageBox::information(this, "", QString("已收藏过该音乐"));
+}
+
+void MainWindow::handleNextPlayLogic(QListWidgetItem *item) //右击搜索歌曲列表菜单选择添加到下一首播放
+{
+    QSqlQuery query;
+    query.prepare("SELECT songname, singername, hash FROM searchlist WHERE id = ?");
+    query.addBindValue(row);
+
+    if (!query.exec() || !query.next())
+    {
+        qDebug() << "获取搜索列表数据失败";
+        return;
+    }
+
+    QString songname = query.value("songname").toString();
+    QString singername = query.value("singername").toString();
+    QString hash = query.value("hash").toString();
+
+
+    query.prepare("INSERT INTO playqueue (username, songname, singername, hash) VALUES (?, ?, ?, ?)");
+    query.addBindValue(NowUser);
+    query.addBindValue(songname);
+    query.addBindValue(singername);
+    query.addBindValue(hash);
+
+    if(!query.exec())
+    {
+        qDebug() << "加入待播放队列失败" << query.lastError().text();
+    }
+    else
+    {
+        qDebug() << "已将"<<songname<<"成功加入待播放队列";
+        //emit updateNextMusicList(); //成功收藏音乐，刷新下一首播放界面
+    }
 }
 
 void MainWindow::handleLoginSuccess(QString username) //接受用户名
@@ -369,6 +445,8 @@ void MainWindow::on_prevButton_clicked() //上一首
         musicPlay = false;
         return;
     }
+    if(rowMax==0)
+        return;
     row--;
     if(row == 0)
         row = rowMax;
@@ -386,16 +464,46 @@ void MainWindow::on_NextButton_clicked() //下一首
         musicPlay = false;
         return;
     }
-    row++;
-    row%=rowMax;
-    qDebug()<<"\nrow:"<<row;
-    playFindMusic();
+
+    QSqlQuery query;
+    // 从下一首队列中获取最先加入的一首歌
+    query.prepare("SELECT * FROM playqueue WHERE username = ? ORDER BY id ASC LIMIT 1");
+    query.addBindValue(NowUser);
+
+    if (query.exec() && query.next())
+    {
+        qDebug()<<"正在播放所选择的下一首";
+        int queueId = query.value("id").toInt();
+        QString songname = query.value("songname").toString();
+        QString singername = query.value("singername").toString();
+        QString hash = query.value("hash").toString();
+
+        // 设置播放标题并播放
+        teCurrentTitle = songname + "-" + singername;
+        downloadPlayer(hash);
+
+        //播放后从队列删除
+        QSqlQuery delQuery;
+        delQuery.prepare("DELETE FROM playqueue WHERE id = ?");
+        delQuery.addBindValue(queueId);
+        delQuery.exec();
+
+        qDebug() << "正在从队列播放下一首：" << teCurrentTitle;
+    }
+    else
+    {
+        if(rowMax==0)
+            return;
+        row++;
+        row%=rowMax;
+        qDebug()<<"\nrow:"<<row;
+        playFindMusic();
+    }
 }
 
 void MainWindow::on_volumehorizontalSlider_valueChanged(int value) //调节音量
 {
     musicoutput->setVolume(1.0*value/ui->volumehorizontalSlider->maximum());
-    qDebug()<<musicoutput->volume();
     ui->label_6->setText(QString("%1").arg(musicoutput->volume()*100));
 }
 
@@ -451,6 +559,7 @@ void MainWindow::playFindMusic() //根据row进行播放搜索
         qDebug() << "从数据库读取的参数:";
         qDebug() << "  歌曲名称:" << songname;
         qDebug() << "  歌手:" << singername;
+        CurrentMusicName = singername;
         qDebug() << "  hash:" << hash << "(长度:" << hash.length() << ")";
     }
     teCurrentTitle=songname+"-"+singername;
@@ -623,6 +732,51 @@ void MainWindow::on_FindButton_clicked() //搜索音乐
 
 }
 
+void MainWindow::processAiRecommendations(QStringList names) {
+    // 禁用界面或显示加载状态，防止用户在处理中途乱点
+
+    for (const QString &songName : names) {
+        QString url = kugouSearchApi + QString("format=json&keyword=%1&page=1&pagesize=1").arg(songName);
+
+        QNetworkAccessManager tempManager;
+        QNetworkReply* reply = tempManager.get(QNetworkRequest(QUrl(url)));
+
+        // --- 核心：使用局部事件循环实现顺序阻塞 ---
+        QEventLoop loop;
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        loop.exec(); // 阻塞在这里，直到当前请求完成
+
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            QJsonDocument doc = QJsonDocument::fromJson(data);
+            QJsonObject root = doc.object();
+            QJsonArray infoArray = root["data"].toObject()["info"].toArray();
+
+            if (!infoArray.isEmpty()) {
+                QJsonObject firstSong = infoArray.at(0).toObject();
+                QString sName = firstSong["songname"].toString();
+                QString singer = firstSong["singername"].toString();
+                QString hash = firstSong["hash"].toString();
+
+                // 顺序入库[cite: 6]
+                QSqlQuery query;
+                query.prepare("INSERT INTO playqueue (username, songname, singername, hash) VALUES (?, ?, ?, ?)");
+                query.addBindValue(NowUser);
+                query.addBindValue(sName);
+                query.addBindValue(singer);
+                query.addBindValue(hash);
+
+                if(query.exec()){
+                    qDebug() << "按顺序入库成功:" << sName;
+                }
+            }
+        }
+        reply->deleteLater();
+    }
+
+    QMessageBox::information(this, "AI助手", "5首推荐歌曲已按顺序加入待播放列表！");
+}
+
 void MainWindow::hashJsonAnalysis(QByteArray JsonData) //解析返回的Json数据
 {
     QJsonDocument document = QJsonDocument::fromJson(JsonData);
@@ -743,21 +897,53 @@ void MainWindow::lyricTextShow(QString role, QString content) //显示歌词
 
     for (const QString &line : lines) {
         QListWidgetItem *item = new QListWidgetItem(line.trimmed());
-
-        // 设置样式
-        item->setForeground(Qt::darkGreen);
-        item->setTextAlignment(Qt::AlignLeft);
-
+        item->setForeground(QColor(100, 100, 100));  // 灰色
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setFont(QFont("Microsoft YaHei", 11));
         ui->ShowMusiclistWidget->addItem(item);
     }
 
     ui->ShowMusiclistWidget->scrollToTop();
-
 }
 
-void MainWindow::SendMusicTitle(QString title) //向Ai发送歌词
+void MainWindow::updateLyricPosition(qint64 position) //歌词滚动
 {
-    QString prompt = QString("请给我《%1》这首歌的歌词，你不需要其余的回答，只需要给我歌词就行").arg(title);
+    int totalLines = ui->ShowMusiclistWidget->count();
+    if (totalLines <= 0 || player->duration() <= 0) return;
+
+    // 计算当前行
+    int targetLine = (position * totalLines) / player->duration();
+    targetLine = qMax(0, qMin(targetLine, totalLines - 1));
+
+    if (targetLine != m_currentLine) {
+        // 恢复旧行样式
+        if (m_currentLine >= 0 && m_currentLine < totalLines) {
+            QListWidgetItem *oldItem = ui->ShowMusiclistWidget->item(m_currentLine);
+            oldItem->setFont(QFont("Microsoft YaHei", 11));
+            oldItem->setForeground(QColor(100, 100, 100));  // 灰色
+        }
+
+        // 设置新行样式（字号放大+高亮颜色）
+        m_currentLine = targetLine;
+        QListWidgetItem *item = ui->ShowMusiclistWidget->item(m_currentLine);
+
+        // 字号从11px放大到14px
+        QFont highlightFont("Microsoft YaHei", 14, QFont::Bold);
+        item->setFont(highlightFont);
+        item->setForeground(QColor("#00E5FF"));  // 亮青色
+
+        // 滚动到中心
+        ui->ShowMusiclistWidget->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+    }
+}
+
+
+
+void MainWindow::SendMusicTitle(QString title,QString name) //向Ai发送歌词
+{
+    qDebug()<<"\n"<<name;
+    QString prompt = QString("请给我《%1》这首歌，歌手是%1的LRC格式带时间轴歌词，必须包含 [mm:ss.xx] 的时间标签，请仿照真正的时间轴，你不需要其余的回答").arg(title).arg(name);
+    //你不需要其余的回答。请给我《%1》这首歌的歌词，你不需要其余的回答，只需要给我歌词就行
 
     // 2.构造 JSON 请求体
     QJsonObject root;
@@ -779,7 +965,7 @@ void MainWindow::SendMusicTitle(QString title) //向Ai发送歌词
     networkManager->post(request, QJsonDocument(root).toJson());
 }
 
-void MainWindow::handleDeepSeekReply(QNetworkReply *reply)  // 处理服务器回复
+void MainWindow::handleDeepSeekReply(QNetworkReply *reply)  // 处理AI服务器回复
 {
     qDebug() << "Status Code:" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug() << "Error:" << reply->errorString();
@@ -805,6 +991,7 @@ void MainWindow::handleDeepSeekReply(QNetworkReply *reply)  // 处理服务器�
 
                 if (!aiResponse.isEmpty()) {
                     // 成功拿到 AI 的推荐文本
+                    qDebug()<<"\n\n\n"<<aiResponse<<"\n\n\n";
                     lyricTextShow("assistant", aiResponse);
                 } else {
                     lyricTextShow("system", "AI 回复内容为空。");
@@ -848,6 +1035,15 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) //移动鼠标事件
 
 void MainWindow::mousePressEvent(QMouseEvent *event) //按下鼠标事件
 {
+
+    if (nextPlayFrame && !nextPlayFrame->isHidden()) //点击其他地方隐藏下一首播放列表
+    {
+        if (!nextPlayFrame->geometry().contains(event->pos()))
+        {
+            nextPlayFrame->hide();
+        }
+    }
+
     if(event->button() == Qt::LeftButton)
     {
         mousePress = true;
@@ -929,7 +1125,7 @@ void MainWindow::startPlay(QString music)  //开始播放
         ui->ShowMusiclistWidget->clear();
         QString h="正在加载《"+CurrentTitle+"》的歌词......";
         ui->ShowMusiclistWidget->addItem(h);
-        SendMusicTitle(CurrentTitle);
+        SendMusicTitle(CurrentTitle,CurrentMusicName);
     }
 
     //切换播放/暂停图标
@@ -951,9 +1147,11 @@ bool MainWindow::downloadFile(const QString &url, const QString &savePath)   //�
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
-    if (reply->error() == QNetworkReply::NoError) {
+    if (reply->error() == QNetworkReply::NoError)
+    {
         QFile file(savePath);
-        if (file.open(QIODevice::WriteOnly)) {
+        if (file.open(QIODevice::WriteOnly))
+        {
             file.write(reply->readAll());
             file.close();
             reply->deleteLater();
@@ -970,7 +1168,8 @@ bool MainWindow::downloadFile(const QString &url, const QString &savePath)   //�
 void MainWindow::deleteLastDownloadedFile() // 删除上一次下载的音乐文件
 {
     //检查路径是否为空
-    if (!lastDownloadedFile.isEmpty()) {
+    if (!lastDownloadedFile.isEmpty())
+    {
 
         // 停止播放器，否则文件被占用无法删除
         if (player) {
@@ -980,10 +1179,14 @@ void MainWindow::deleteLastDownloadedFile() // 删除上一次下载的音乐文
 
         QCoreApplication::processEvents();
         // 检查文件是否存在并删除
-        if (QFile::exists(lastDownloadedFile)) {
-            if (QFile::remove(lastDownloadedFile)) {
+        if (QFile::exists(lastDownloadedFile))
+        {
+            if (QFile::remove(lastDownloadedFile))
+            {
                 qDebug() << "成功删除临时文件：" << lastDownloadedFile;
-            } else {
+            }
+            else
+            {
                 qDebug() << "删除失败，文件可能仍被占用";
             }
         }
@@ -995,43 +1198,105 @@ void MainWindow::deleteLastDownloadedFile() // 删除上一次下载的音乐文
 
 void MainWindow::on_recommend_pushButton_clicked() //打开Ai推荐窗口
 {
-    if (aiWindow->isHidden())
-    {
-        // 获取主窗口的右上角坐标 (x + width)
-        int x = this->geometry().x() + this->width();
-        int y = this->geometry().y(); // y轴与主窗口顶部对齐
+    // 计算目标显示位置（主窗口右侧）
+    QPoint showPos = this->mapToGlobal(QPoint(this->width() + 10, 0));
+    // 计算隐藏时的偏移位置（向左偏移 20 像素进入主窗口方向消失）
+    QPoint hidePos = QPoint(showPos.x() - 20, showPos.y());
 
-        // 移动AI窗口到计算好的位置
-        aiWindow->move(x, y);
-
-        // 显示AI窗口
+    if (aiWindow->isHidden()) {
+        // 设置初始状态：全透明，且位置偏移20像素
+        aiWindow->setWindowOpacity(0);
+        aiWindow->move(hidePos);
         aiWindow->show();
+
+        // 透明度动画
+        QPropertyAnimation *opacityAnim = new QPropertyAnimation(aiWindow, "windowOpacity");
+        opacityAnim->setDuration(300);
+        opacityAnim->setStartValue(0);
+        opacityAnim->setEndValue(1);
+        opacityAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+        // 位置平移动画
+        QPropertyAnimation *posAnim = new QPropertyAnimation(aiWindow, "pos");
+        posAnim->setDuration(300);
+        posAnim->setStartValue(hidePos);
+        posAnim->setEndValue(showPos);
+        posAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+        opacityAnim->start(QAbstractAnimation::DeleteWhenStopped);
+        posAnim->start(QAbstractAnimation::DeleteWhenStopped);
     }
-    else
-    {
-        // 如果已经显示，则再次点击隐藏
-        aiWindow->hide();
+    else {
+
+        QPropertyAnimation *opacityAnim = new QPropertyAnimation(aiWindow, "windowOpacity");
+        opacityAnim->setDuration(200);
+        opacityAnim->setStartValue(1);
+        opacityAnim->setEndValue(0);
+
+        // 位置平移动画
+        QPropertyAnimation *posAnim = new QPropertyAnimation(aiWindow, "pos");
+        posAnim->setDuration(200);
+        posAnim->setStartValue(showPos);
+        posAnim->setEndValue(hidePos);
+
+        // 等待动画播放完毕再隐藏
+        connect(opacityAnim, &QPropertyAnimation::finished, aiWindow, &QWidget::hide);
+
+        opacityAnim->start(QAbstractAnimation::DeleteWhenStopped);
+        posAnim->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
 
 void MainWindow::on_collect_Button_clicked() //打开收藏窗口
 {
+    QPoint showPos = this->mapToGlobal(QPoint(-collectWindow->width() - 10, 0));
+    // 计算隐藏时的偏移位置,向右偏移20像素并消失
+    QPoint hidePos = QPoint(showPos.x() + 20, showPos.y());
+
     if (collectWindow->isHidden())
     {
-        QPoint mainPos = this->frameGeometry().topLeft();
 
-        // 设置收藏窗口的位置：主窗口左边缘再往左移动收藏窗口自身的宽度
-        // 如果想紧贴在内部左侧，可以根据需要调整
-        int x = mainPos.x() - collectWindow->width();
-        int y = mainPos.y();
-
-        collectWindow->move(x, y);
+        collectWindow->setWindowOpacity(0);
+        collectWindow->move(hidePos); // 从偏移位置开始
         collectWindow->show();
+
+        // 透明度动画
+        QPropertyAnimation *opacityAnim = new QPropertyAnimation(collectWindow, "windowOpacity");
+        opacityAnim->setDuration(300);
+        opacityAnim->setStartValue(0);
+        opacityAnim->setEndValue(1);
+        opacityAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+        // 位置平移动画
+        QPropertyAnimation *posAnim = new QPropertyAnimation(collectWindow, "pos");
+        posAnim->setDuration(300);
+        posAnim->setStartValue(hidePos);
+        posAnim->setEndValue(showPos);
+        posAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+        opacityAnim->start(QAbstractAnimation::DeleteWhenStopped);
+        posAnim->start(QAbstractAnimation::DeleteWhenStopped);
     }
     else
     {
-        // 如果已经显示，则再次点击隐藏
-        collectWindow->hide();
+        QPropertyAnimation *opacityAnim = new QPropertyAnimation(collectWindow, "windowOpacity");
+        opacityAnim->setDuration(200);
+        opacityAnim->setStartValue(1);
+        opacityAnim->setEndValue(0);
+        opacityAnim->setEasingCurve(QEasingCurve::InCubic);
+
+        // 位置平移动画
+        QPropertyAnimation *posAnim = new QPropertyAnimation(collectWindow, "pos");
+        posAnim->setDuration(200);
+        posAnim->setStartValue(showPos);
+        posAnim->setEndValue(hidePos);
+        posAnim->setEasingCurve(QEasingCurve::InCubic);
+
+        // 等待动画播放完毕再隐藏
+        connect(opacityAnim, &QPropertyAnimation::finished, collectWindow, &QWidget::hide);
+
+        opacityAnim->start(QAbstractAnimation::DeleteWhenStopped);
+        posAnim->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
 
@@ -1089,3 +1354,84 @@ void MainWindow::on_Clear_History_Button_clicked()  //清空历史记录
     }
 }
 
+
+void MainWindow::on_NextMusicListButton_clicked()
+{
+    // 延迟初始化窗口
+    if (!nextPlayFrame)
+    {
+        nextPlayFrame = new QFrame(this);
+        nextPlayFrame->setFixedSize(250, 300);
+        nextPlayFrame->setStyleSheet(
+            "QFrame { "
+            "background-color: rgba(30, 30, 30, 235); " // 稍微调高不透明度，增加质感
+            "border: 1px solid rgba(255, 255, 255, 60); "
+            "border-radius: 12px; "
+            "}"
+            );
+
+        QVBoxLayout *layout = new QVBoxLayout(nextPlayFrame);
+        nextPlayList = new QListWidget(nextPlayFrame);
+        nextPlayList->setFocusPolicy(Qt::NoFocus);
+        nextPlayList->setStyleSheet(
+            "QListWidget { background: transparent; border: none; color: #E0E0E0; font-size: 13px; }"
+            );
+        layout->addWidget(nextPlayList);
+
+        // 初始设为隐藏
+        nextPlayFrame->hide();
+    }
+
+    // 计算位置
+    QPoint btnPos = ui->NextMusicListButton->mapTo(this, QPoint(0, 0));
+    int targetX = btnPos.x() - (nextPlayFrame->width() / 2) + (ui->NextMusicListButton->width() / 2);
+    int targetY = btnPos.y() - nextPlayFrame->height() - 10;
+
+    QPoint showPos(targetX, targetY);
+    QPoint startPos(targetX, targetY + 15); // 从下方15像素处滑入
+
+    // 切换逻辑
+    if (nextPlayFrame->isHidden())
+    {
+        // 刷新列表数据
+        nextPlayList->clear();
+        QSqlQuery query;
+
+        // 查询当前用户的播放队列
+        query.prepare("SELECT songname, singername FROM playqueue WHERE username = ? ORDER BY id ASC");
+        query.addBindValue(NowUser);
+
+        if (query.exec())
+        {
+            bool hasSongs = false;
+            // 直接使用 while 循环，确保从第一条记录 (index 0) 开始读取
+            while (query.next())
+            {
+                hasSongs = true;
+                nextPlayList->addItem(query.value(0).toString() + " - " + query.value(1).toString());
+            }
+
+            if (!hasSongs)
+            {
+                nextPlayList->addItem("队列中暂无歌曲...");
+            }
+        }
+
+        // 显示动画
+        nextPlayFrame->show();
+        nextPlayFrame->raise();
+
+        // 位置平移动画
+        QPropertyAnimation *anim = new QPropertyAnimation(nextPlayFrame, "pos");
+        anim->setDuration(300);
+        anim->setStartValue(startPos);
+        anim->setEndValue(showPos);
+        anim->setEasingCurve(QEasingCurve::OutCubic); // 减速缓动
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+    else
+    {
+        // --- 直接隐藏 ---
+        nextPlayFrame->hide();
+    }
+}

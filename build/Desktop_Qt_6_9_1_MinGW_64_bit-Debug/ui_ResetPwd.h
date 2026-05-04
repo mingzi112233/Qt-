@@ -167,6 +167,7 @@ public:
 
         ResetPwd_varifypushButton = new QPushButton(page_7);
         ResetPwd_varifypushButton->setObjectName("ResetPwd_varifypushButton");
+        ResetPwd_varifypushButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         horizontalLayout_5->addWidget(ResetPwd_varifypushButton);
 

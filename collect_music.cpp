@@ -3,6 +3,7 @@
 
 QString CurrentTitle="";
 QString teCurrentTitle="";
+QString CurrentMusicName="";
 bool isCollectPlay=false;
 
 Collect_Music::Collect_Music(QWidget *parent) :

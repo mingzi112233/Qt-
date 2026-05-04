@@ -62,12 +62,12 @@ void ResetPwd::on_ResetPwd_confirmpushButton_clicked() //重置
         return;
     }
 
-    query.prepare("SELECT Username FROM user WHERE Email = ?");
+    query.prepare("SELECT * FROM user WHERE Username = ? AND Email = ?");
+    query.addBindValue(name);
     query.addBindValue(email);
-
     if (!query.exec() || !query.next())
     {
-        ui->ResetPwd_errorlabel->setText("该邮箱未注册账号");
+        ui->ResetPwd_errorlabel->setText("用户名与注册邮箱不匹配");
         return;
     }
 
@@ -92,9 +92,20 @@ void ResetPwd::on_ResetPwd_confirmpushButton_clicked() //重置
 void ResetPwd::on_ResetPwd_varifypushButton_clicked() //获取验证码
 {
     QString targetEmail = ui->ResetPwd_emaillineEdit->text().trimmed();
+    QString name = ui->ResetPwd_usernamelineEdit->text().trimmed();
     if (!targetEmail.contains("@qq.com"))
     {
         ui->ResetPwd_errorlabel->setText("请输入有效QQ邮箱");
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT Username FROM user WHERE Username = ? AND Email = ?");
+    query.addBindValue(name);
+    query.addBindValue(targetEmail);
+
+    if (!query.exec() || !query.next()) {
+        ui->ResetPwd_errorlabel->setText("用户名与邮箱不匹配");
         return;
     }
 

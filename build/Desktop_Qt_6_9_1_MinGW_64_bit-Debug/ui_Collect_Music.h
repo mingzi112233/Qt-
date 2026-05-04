@@ -35,7 +35,7 @@ public:
     {
         if (CollectDialog->objectName().isEmpty())
             CollectDialog->setObjectName("CollectDialog");
-        CollectDialog->resize(373, 722);
+        CollectDialog->resize(373, 706);
         gridLayout = new QGridLayout(CollectDialog);
         gridLayout->setObjectName("gridLayout");
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);

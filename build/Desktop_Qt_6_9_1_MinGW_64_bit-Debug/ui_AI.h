@@ -24,25 +24,35 @@ class Ui_Dialog
 {
 public:
     QGridLayout *gridLayout;
-    QPushButton *Aiclose_pushButton;
-    QListWidget *AI_listWidget;
     QSpacerItem *horizontalSpacer_4;
-    QSpacerItem *horizontalSpacer;
-    QSpacerItem *horizontalSpacer_7;
-    QSpacerItem *horizontalSpacer_6;
-    QSpacerItem *horizontalSpacer_5;
     QSpacerItem *horizontalSpacer_3;
-    QSpacerItem *horizontalSpacer_2;
+    QSpacerItem *horizontalSpacer_5;
+    QPushButton *Aiclose_pushButton;
+    QSpacerItem *horizontalSpacer;
     QPushButton *Recommend_pushButton;
-    QSpacerItem *horizontalSpacer_8;
+    QPushButton *RecommendPlay_pushButton;
+    QSpacerItem *horizontalSpacer_2;
+    QListWidget *AI_listWidget;
 
     void setupUi(QDialog *Dialog)
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName("Dialog");
-        Dialog->resize(317, 681);
+        Dialog->resize(317, 706);
         gridLayout = new QGridLayout(Dialog);
         gridLayout->setObjectName("gridLayout");
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_4, 0, 0, 1, 1);
+
+        horizontalSpacer_3 = new QSpacerItem(106, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_3, 0, 1, 1, 1);
+
+        horizontalSpacer_5 = new QSpacerItem(89, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_5, 0, 2, 1, 1);
+
         Aiclose_pushButton = new QPushButton(Dialog);
         Aiclose_pushButton->setObjectName("Aiclose_pushButton");
         Aiclose_pushButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
@@ -67,49 +77,30 @@ public:
         Aiclose_pushButton->setIcon(icon);
         Aiclose_pushButton->setIconSize(QSize(32, 32));
 
-        gridLayout->addWidget(Aiclose_pushButton, 0, 8, 1, 1);
-
-        AI_listWidget = new QListWidget(Dialog);
-        AI_listWidget->setObjectName("AI_listWidget");
-
-        gridLayout->addWidget(AI_listWidget, 1, 0, 1, 9);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_4, 0, 0, 1, 1);
+        gridLayout->addWidget(Aiclose_pushButton, 0, 4, 1, 1);
 
         horizontalSpacer = new QSpacerItem(41, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 2, 0, 1, 2);
-
-        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_7, 2, 2, 1, 1);
-
-        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_6, 2, 6, 1, 1);
-
-        horizontalSpacer_5 = new QSpacerItem(89, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_5, 0, 4, 1, 4);
-
-        horizontalSpacer_3 = new QSpacerItem(106, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_3, 0, 1, 1, 3);
-
-        horizontalSpacer_2 = new QSpacerItem(41, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_2, 2, 7, 1, 2);
+        gridLayout->addItem(horizontalSpacer, 2, 0, 1, 1);
 
         Recommend_pushButton = new QPushButton(Dialog);
         Recommend_pushButton->setObjectName("Recommend_pushButton");
 
-        gridLayout->addWidget(Recommend_pushButton, 2, 3, 1, 2);
+        gridLayout->addWidget(Recommend_pushButton, 2, 1, 1, 1);
 
-        horizontalSpacer_8 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        RecommendPlay_pushButton = new QPushButton(Dialog);
+        RecommendPlay_pushButton->setObjectName("RecommendPlay_pushButton");
 
-        gridLayout->addItem(horizontalSpacer_8, 2, 5, 1, 1);
+        gridLayout->addWidget(RecommendPlay_pushButton, 2, 2, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(41, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 2, 3, 1, 2);
+
+        AI_listWidget = new QListWidget(Dialog);
+        AI_listWidget->setObjectName("AI_listWidget");
+
+        gridLayout->addWidget(AI_listWidget, 1, 0, 1, 5);
 
 
         retranslateUi(Dialog);
@@ -122,6 +113,7 @@ public:
         Dialog->setWindowTitle(QCoreApplication::translate("Dialog", "Dialog", nullptr));
         Aiclose_pushButton->setText(QString());
         Recommend_pushButton->setText(QCoreApplication::translate("Dialog", "\350\277\233\350\241\214\346\216\250\350\215\220", nullptr));
+        RecommendPlay_pushButton->setText(QCoreApplication::translate("Dialog", "\346\222\255\346\224\276", nullptr));
     } // retranslateUi
 
 };

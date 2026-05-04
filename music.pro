@@ -42,3 +42,5 @@ include(smtp/smtp.pri)
 
 RESOURCES += \
     res.qrc
+
+DISTFILES +=

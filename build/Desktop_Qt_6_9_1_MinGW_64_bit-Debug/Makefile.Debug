@@ -216,6 +216,7 @@ debug/qrc_res.cpp: ../../res.qrc \
 		../../png/button/order.png \
 		../../png/button/random.png \
 		../../png/button/stop.png \
+		../../png/button/speaker.png \
 		../../png/button/skin_change.png \
 		../../png/button/help.png \
 		../../png/button/next.png \
@@ -227,7 +228,8 @@ debug/qrc_res.cpp: ../../res.qrc \
 		../../png/button/play.png \
 		../../png/button/close.png \
 		../../avatar/res-LoginImage1.jpg \
-		../../avatar/res-LoginImage2.png
+		../../avatar/res-LoginImage2.png \
+		../../style/stylesheet.qss
 	C:\Qt\6.9.1\mingw_64\bin\rcc.exe -name res --no-zstd ..\..\res.qrc -o debug\qrc_res.cpp
 
 compiler_moc_predefs_make_all: debug/moc_predefs.h
@@ -1418,6 +1420,11 @@ debug/moc_mainwindow.cpp: ../../mainwindow.h \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QFileDialog \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qfiledialog.h \
 		C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QGraphicsOpacityEffect \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qgraphicseffect.h \
+		C:/Qt/6.9.1/mingw_64/include/QtCore/QPropertyAnimation \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QScrollBar \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qscrollbar.h \
 		debug/moc_predefs.h \
 		C:/Qt/6.9.1/mingw_64/bin/moc.exe
 	C:\Qt\6.9.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/Qt-MyProject/music/music/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.9.1/mingw_64/mkspecs/win32-g++ -ID:/Qt-MyProject/music/music -ID:/Qt-MyProject/music/music/smtp -IC:/Qt/6.9.1/mingw_64/include -IC:/Qt/6.9.1/mingw_64/include/QtMultimediaWidgets -IC:/Qt/6.9.1/mingw_64/include/QtMultimedia -IC:/Qt/6.9.1/mingw_64/include/QtWidgets -IC:/Qt/6.9.1/mingw_64/include/QtGui -IC:/Qt/6.9.1/mingw_64/include/QtNetwork -IC:/Qt/6.9.1/mingw_64/include/QtSql -IC:/Qt/6.9.1/mingw_64/include/QtConcurrent -IC:/Qt/6.9.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\mainwindow.h -o debug\moc_mainwindow.cpp
@@ -3719,6 +3726,11 @@ debug/main.o: ../../main.cpp ../../mainwindow.h \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QFileDialog \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qfiledialog.h \
 		C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QGraphicsOpacityEffect \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qgraphicseffect.h \
+		C:/Qt/6.9.1/mingw_64/include/QtCore/QPropertyAnimation \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QScrollBar \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qscrollbar.h \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QApplication \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\..\main.cpp
@@ -4166,10 +4178,16 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QFileDialog \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qfiledialog.h \
 		C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QGraphicsOpacityEffect \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qgraphicseffect.h \
+		C:/Qt/6.9.1/mingw_64/include/QtCore/QPropertyAnimation \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QScrollBar \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qscrollbar.h \
 		ui_mainwindow.h \
 		C:/Qt/6.9.1/mingw_64/include/QtGui/QIcon \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QApplication \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qapplication.h \
+		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QFrame \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/QGridLayout \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qgridlayout.h \
 		C:/Qt/6.9.1/mingw_64/include/QtWidgets/qlayout.h \
